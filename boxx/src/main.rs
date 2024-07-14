@@ -1,4 +1,4 @@
-use std::{fmt::Error, io::{BufRead, BufReader, Read}, net, result, usize};
+use std::{fmt::Error, io::{BufRead, BufReader, Read, Write}, net, result, usize};
 use net::{TcpListener, TcpStream};
 // use log::{error, warn, info, debug, trace};
 
@@ -22,20 +22,23 @@ fn read_header(mut buffer: BufReader<&mut TcpStream>) -> String{
         match read_status {
             Ok(0) => break,
             Ok(bytes) => println!("HTTP header bytes read: {bytes}"),
-            Err(error) => panic!("Issue happen when trying to read the tcpstream: {error}")
+            Err(error) => panic!("Issue happen when trying to read the tcpstream: {}", error)
         };
 
         // End of the header reached
-        if cargo.ends_with("\r\n\r\n") {
+        println!("Parts: ^{cargo}$");
+        if cargo == "\r\n"{
+            println!("End of header is reached");
             break;
         }
         header.push_str(&cargo);
     }
-    return header.un;
+    return header;
 }
 
 fn handler(mut stream: TcpStream){
-    let mut buf_reader:BufReader<&mut _> = BufReader::new(&mut stream);
-
+    let buf_reader:BufReader<&mut _> = BufReader::new(&mut stream);
     let header:String = read_header(buf_reader);
+    let format:&str = &header;
+    println!("{:?}", format);
 }
